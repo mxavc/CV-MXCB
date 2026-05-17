@@ -1,49 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio</title>
+    <title>Portafolio | CV</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <section>
+<body class="page-body">
+    <header class="hero">
+        <p class="eyebrow">Portafolio</p>
+        <h1 class="hero-title">Proyectos destacados</h1>
+        <p class="hero-subtitle">Selección de trabajos académicos y personales que muestran variedad técnica y criterio de implementación.</p>
+    </header>
+    <main class="cv-grid">
+        <section class="card timeline-card">
+            <article class="project-card">
+                <h2 class="section-title">Proyecto 1: Laboratorio Docker</h2>
+                <p>Implementación de redes bridge y vinculación de contenedores.</p>
+                <p><strong>Tecnologías:</strong> Docker, Nginx, MySQL</p>
+            </article>
 
-        <h1>Portafolio</h1>
+            <article class="project-card">
+                <h2 class="section-title">Proyecto 2: Seguridad Informática</h2>
+                <p>Configuración de Wireshark y análisis de tráfico en prácticas académicas.</p>
+                <p><strong>Tecnologías:</strong> Wireshark, Npcap</p>
+            </article>
 
-        <article>
-            <h2>Proyecto 1: Laboratorio Docker</h2>
-            <p>Implementación de redes bridge y vinculación de contenedores.</p>
-            <p><strong>Tecnologías:</strong> Docker, Nginx, MySQL</p>
-        </article>
+            <article class="project-card">
+                <h2 class="section-title">Proyecto 3: Página Web Personal</h2>
+                <p>Desarrollo de un sitio en HTML5 para portafolio profesional.</p>
+                <p><strong>Tecnologías:</strong> HTML5, CSS3</p>
+            </article>
 
-        <article>
-            <h2>Proyecto 2: Seguridad Informática</h2>
-            <p>Configuración de Wireshark y análisis de tráfico en prácticas académicas.</p>
-            <p><strong>Tecnologías:</strong> Wireshark, Npcap</p>
-        </article>
+            <article class="project-card">
+                <h2 class="section-title">Proyecto 4: IA aplicada en sensores de plantas</h2>
+                <p>Desarrollo de un sistema inteligente para monitorear el crecimiento de plantas mediante sensores de humedad, temperatura y luz.</p>
+                <p><strong>Tecnologías:</strong> Python, TensorFlow, Arduino, sensores IoT</p>
+                <p><strong>Resultados:</strong> Predicción de necesidades de riego y optimización de ambientes de cultivo.</p>
+            </article>
 
-        <article>
-            <h2>Proyecto 3: Página Web Personal</h2>
-            <p>Desarrollo de un sitio en HTML5 para portafolio profesional.</p>
-            <p><strong>Tecnologías:</strong> HTML5, CSS3</p>
-        </article>
-
-        <article>
-            <h2>Proyecto 4: IA aplicada en sensores de plantas</h2>
-            <p>Desarrollo de un sistema inteligente para monitorear el crecimiento de plantas mediante sensores de humedad, temperatura y luz.</p>
-            <p><strong>Tecnologías:</strong> Python, TensorFlow, Arduino, sensores IoT</p>
-            <p><strong>Resultados:</strong> Predicción de necesidades de riego y optimización de ambientes de cultivo.</p>
-        </article>
-
-        <article>
-            <h2>Proyecto 5: Sistema de gestión de proyectos de profesores</h2>
-            <p>Diseño de una aplicación web para organizar proyectos académicos, asignar tareas y dar seguimiento a avances de profesores.</p>
-            <p><strong>Tecnologías:</strong> HTML5, CSS3, JavaScript, MySQL, PHP</p>
-            <p><strong>Resultados:</strong> Plataforma funcional para mejorar la trazabilidad y colaboración en proyectos educativos.</p>
-        </article>
-    </section>
-    <footer>
-        <a href="index.html">Regresar al Inicio</a>
+            <article class="project-card">
+                <h2 class="section-title">Proyecto 5: Sistema de gestión de proyectos de profesores</h2>
+                <p>Diseño de una aplicación web para organizar proyectos académicos, asignar tareas y dar seguimiento a avances de profesores.</p>
+                <p><strong>Tecnologías:</strong> HTML5, CSS3, JavaScript, MySQL, PHP</p>
+                <p><strong>Resultados:</strong> Plataforma funcional para mejorar la trazabilidad y colaboración en proyectos educativos.</p>
+            </article>
+        </section>
+    </main>
+    <footer class="footer-bar">
+        <a class="footer-link" href="index.html">Regresar al Inicio</a>
     </footer>
 </body>
 </html>
