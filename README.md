@@ -30,6 +30,8 @@ Todo el texto está en `index.html`, organizado por secciones con comentarios (`
 - **Datos pendientes:** se marcan con `<mark class="todo">[COMPLETAR: …]</mark>`, que se ve resaltado en pantalla y en el papel. Para encontrarlos todos, busca `COMPLETAR` en el archivo. Al completar un dato, sustituye todo el `<mark>` por el texto real.
 - **Enlaces externos:** usa siempre `target="_blank" rel="noopener noreferrer"`, el ícono `icon-ext` y el texto oculto `<span class="sr-only">(abre en pestaña nueva)</span>`.
 - **Nueva sección:** crea `<section class="section" id="x" aria-labelledby="x-titulo">` con su `<h2 class="section-title" id="x-titulo">`, y añade `<li><a class="nav-link" href="#x">…</a></li>` en el `<nav>`. El resaltado de la sección activa la detecta automáticamente.
+- **Número de WhatsApp:** aparece en dos enlaces `https://wa.me/593999905758` (el botón flotante `.whatsapp-fab` y la fila de Contacto). Usa el formato internacional sin `+`, espacios ni guiones, y actualiza también el texto visible y el `title`.
+- **Ancho y columnas:** el contenido ocupa todo el ancho de la pantalla. `--page-gutter` controla el margen lateral y `--col-min` el ancho mínimo de cada columna; las secciones agregan o quitan columnas solas al redimensionar.
 - **Colores, tipografías y espaciado:** se cambian solo en las variables de `:root` al inicio de `css/styles.css`. El tema oscuro redefine esas mismas variables en dos bloques (preferencia del sistema y elección manual) que deben quedar iguales. Comprueba que el contraste del texto siga siendo ≥ 4.5:1.
 - **Foto:** reemplaza `assets/foto-perfil.jpg` y actualiza los atributos `width` y `height` del `<img>` con las dimensiones reales de la imagen.
 
