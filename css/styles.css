@@ -1,0 +1,1011 @@
+/* =========================================================
+   CV · Marlon Xavier Chimarro Bermeo
+   Índice:
+   1. Tokens (variables)   5. Componentes
+   2. Tema oscuro          6. Utilidades
+   3. Base                 7. Movimiento reducido
+   4. Layout               8. Impresión
+   ========================================================= */
+
+/* ---------- 1. Tokens ---------- */
+:root {
+    /* Paleta: 2 colores + neutros */
+    --c-primary: #2f5d63;          /* verde azulado: enlaces, activo, foco */
+    --c-primary-strong: #1f4247;   /* hover/active del primario */
+    --c-accent: #b6a97f;           /* arena: solo detalles decorativos */
+    --c-text: #1f2a2c;
+    --c-text-muted: #4a5a5d;
+    --c-bg: #f6f6f3;
+    --c-surface: #ffffff;
+    --c-border: #d9dedb;
+    --c-tag-bg: #eaf0ee;
+    --c-todo-bg: #fff3c4;
+    --c-todo-text: #4d3b00;
+    --c-on-primary: #ffffff;
+    --c-whatsapp: #25d366;         /* color de marca, solo en el botón de WhatsApp */
+    --c-whatsapp-strong: #1ebe5b;
+    --c-on-whatsapp: #062b16;
+
+    /* Tipografía: 2 familias del sistema (sin descargas) */
+    --font-serif: Georgia, "Times New Roman", serif;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --fs-xs: 0.8125rem;
+    --fs-sm: 0.9375rem;
+    --fs-base: 1rem;
+    --fs-md: 1.25rem;
+    --fs-lg: 1.625rem;
+    --fs-xl: clamp(2rem, 1.2rem + 2.2vw, 3.5rem);
+    --lh-tight: 1.2;
+    --lh-base: 1.65;
+
+    /* Espaciado (escala 4px) */
+    --sp-1: 0.25rem;
+    --sp-2: 0.5rem;
+    --sp-3: 0.75rem;
+    --sp-4: 1rem;
+    --sp-5: 1.5rem;
+    --sp-6: 2rem;
+    --sp-7: 3rem;
+    --sp-8: 4.5rem;
+
+    --radius: 10px;
+    --radius-pill: 999px;
+    --page-gutter: clamp(1rem, 4vw, 5rem);  /* margen lateral fluido: el contenido usa todo el ancho */
+    --col-min: clamp(22rem, 28vw, 34rem);   /* ancho mínimo de columna; crece con la pantalla para no dejar huecos */
+    --prose-max: 75ch;
+    --header-h: 3.75rem;
+    --focus-ring: 3px solid var(--c-primary);
+    --transition: 160ms ease;
+}
+
+/* ---------- 2. Tema oscuro (sistema + manual) ---------- */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --c-primary: #8cc8ce;
+        --c-primary-strong: #b5dfe3;
+        --c-accent: #cbbf93;
+        --c-text: #e6ecec;
+        --c-text-muted: #b3c0c2;
+        --c-bg: #13191b;
+        --c-surface: #1b2326;
+        --c-border: #2f3b3e;
+        --c-tag-bg: #24302f;
+        --c-todo-bg: #4d3b00;
+        --c-todo-text: #fff3c4;
+        --c-on-primary: #13191b;
+        color-scheme: dark;
+    }
+}
+
+:root[data-theme="dark"] {
+    --c-primary: #8cc8ce;
+    --c-primary-strong: #b5dfe3;
+    --c-accent: #cbbf93;
+    --c-text: #e6ecec;
+    --c-text-muted: #b3c0c2;
+    --c-bg: #13191b;
+    --c-surface: #1b2326;
+    --c-border: #2f3b3e;
+    --c-tag-bg: #24302f;
+    --c-todo-bg: #4d3b00;
+    --c-todo-text: #fff3c4;
+    --c-on-primary: #13191b;
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+/* ---------- 3. Base ---------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + var(--sp-4));
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+    color: var(--c-text);
+    background: var(--c-bg);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+h1,
+h2,
+h3 {
+    line-height: var(--lh-tight);
+    margin: 0;
+}
+
+p {
+    margin: 0 0 var(--sp-3);
+}
+
+a {
+    color: var(--c-primary);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+a:hover {
+    color: var(--c-primary-strong);
+    text-decoration-thickness: 2px;
+}
+
+/* Foco visible y consistente en todo el sitio */
+:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+main:focus {
+    outline: none;
+}
+
+.icon {
+    width: 1.15em;
+    height: 1.15em;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: -0.2em;
+}
+
+.icon-ext {
+    width: 0.85em;
+    height: 0.85em;
+}
+
+/* ---------- 4. Layout ---------- */
+.skip-link {
+    position: absolute;
+    left: var(--sp-4);
+    top: -100px;
+    z-index: 100;
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--c-primary);
+    color: var(--c-on-primary);
+    font-weight: 600;
+    border-radius: var(--radius);
+}
+
+.skip-link:focus {
+    top: var(--sp-2);
+    color: var(--c-on-primary);
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
+}
+
+.header-inner {
+    min-height: var(--header-h);
+    padding: 0 var(--page-gutter);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+}
+
+.brand {
+    font-family: var(--font-serif);
+    font-size: var(--fs-md);
+    font-weight: 700;
+    color: var(--c-text);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.brand:hover {
+    color: var(--c-primary);
+}
+
+.menu-panel {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    margin-left: auto;
+}
+
+.nav-list {
+    display: flex;
+    gap: var(--sp-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-link {
+    display: block;
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--radius);
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition), background-color var(--transition);
+}
+
+.nav-link:hover {
+    color: var(--c-primary);
+    background: var(--c-tag-bg);
+}
+
+.nav-link:active {
+    background: var(--c-border);
+}
+
+/* H1 · sección activa (lo marca main.js con aria-current) */
+.nav-link[aria-current="true"] {
+    color: var(--c-primary);
+    font-weight: 700;
+    border-bottom-color: var(--c-primary);
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: var(--sp-2);
+}
+
+.menu-toggle {
+    display: none;
+}
+
+main {
+    padding: var(--sp-6) var(--page-gutter) var(--sp-7);
+}
+
+/* Cada sección es una cuadrícula fluida: las entradas se reparten en tantas
+   columnas como quepan (mín. --col-min) y se reacomodan al redimensionar. */
+.section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr));
+    gap: var(--sp-6) var(--sp-7);
+    align-items: start;
+    padding: var(--sp-7) 0 var(--sp-5);
+    border-top: 1px solid var(--c-border);
+}
+
+.section > :not(.entry) {
+    grid-column: 1 / -1;
+}
+
+.section > .section-title {
+    margin-bottom: 0;
+}
+
+.section.profile {
+    display: block;
+    padding-top: var(--sp-5);
+    border-top: 0;
+}
+
+.profile-about > .section-title {
+    margin-bottom: var(--sp-5);
+}
+
+.site-footer {
+    padding: var(--sp-5) var(--page-gutter) 8rem;   /* espacio para los botones flotantes */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-4);
+    border-top: 1px solid var(--c-border);
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+/* ---------- 5. Componentes ---------- */
+
+/* Perfil */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-5);
+    align-items: center;
+    margin-bottom: var(--sp-6);
+}
+
+.profile-photo {
+    width: clamp(140px, 15vw, 260px);   /* solo se escala; proporción original 4:5 sin recorte */
+    border-radius: var(--radius);
+    border: 3px solid var(--c-accent);
+}
+
+.eyebrow {
+    margin: 0 0 var(--sp-2);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+}
+
+.name {
+    font-family: var(--font-serif);
+    font-size: var(--fs-xl);
+    font-weight: 700;
+}
+
+.role {
+    margin: var(--sp-2) 0 var(--sp-4);
+    font-size: var(--fs-md);
+    color: var(--c-text-muted);
+}
+
+.quick-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.quick-contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-1) 0;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+/* Títulos de sección con ancla compartible */
+.section-title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-5);
+    font-family: var(--font-serif);
+    font-size: var(--fs-lg);
+}
+
+.section-title::before {
+    content: "";
+    align-self: center;
+    width: 1.5rem;
+    height: 3px;
+    background: var(--c-accent);
+    border-radius: 2px;
+}
+
+.anchor {
+    font-family: var(--font-sans);
+    font-size: var(--fs-base);
+    color: var(--c-text-muted);
+    text-decoration: none;
+    padding: 0 var(--sp-2);
+    opacity: 0.7;
+}
+
+.anchor:hover,
+.anchor:focus-visible {
+    color: var(--c-primary);
+    opacity: 1;
+}
+
+.subheading {
+    margin: var(--sp-5) 0 var(--sp-3);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+}
+
+.prose {
+    max-width: var(--prose-max);
+}
+
+/* Entrada única (experiencia, educación, proyectos) */
+.entry {
+    position: relative;
+    padding: 0 0 var(--sp-2) var(--sp-5);
+    border-left: 2px solid var(--c-border);
+}
+
+.entry::before {
+    content: "";
+    position: absolute;
+    left: -7px;
+    top: 0.45em;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--c-surface);
+    border: 2px solid var(--c-primary);
+}
+
+.entry-header {
+    margin-bottom: var(--sp-3);
+}
+
+.entry-title {
+    font-size: var(--fs-md);
+    font-weight: 700;
+}
+
+.entry-org {
+    margin: var(--sp-1) 0 0;
+    font-weight: 500;
+}
+
+.entry-meta {
+    margin: var(--sp-1) 0 0;
+    font-size: var(--fs-sm);
+    color: var(--c-text-muted);
+}
+
+.entry-list {
+    margin: 0;
+    padding-left: var(--sp-5);
+}
+
+.entry-list li + li {
+    margin-top: var(--sp-1);
+}
+
+/* Etiquetas */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin: var(--sp-3) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tag {
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: var(--radius-pill);
+    background: var(--c-tag-bg);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+}
+
+/* Habilidades */
+.skills {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+    gap: var(--sp-4);
+    margin: 0;
+}
+
+.skill-group {
+    padding: var(--sp-4);
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+}
+
+.skill-group dt {
+    font-weight: 700;
+    margin-bottom: var(--sp-1);
+}
+
+.skill-group dd {
+    margin: 0;
+    color: var(--c-text-muted);
+}
+
+/* Contacto */
+.contact-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+    gap: var(--sp-4) var(--sp-7);
+    margin: var(--sp-5) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.contact-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-1);
+    padding-bottom: var(--sp-4);
+    border-bottom: 1px solid var(--c-border);
+}
+
+.contact-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-weight: 600;
+}
+
+.contact-value {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2) var(--sp-3);
+    overflow-wrap: anywhere;
+}
+
+.contact-value a {
+    font-weight: 500;
+}
+
+.copy-status {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--c-primary);
+}
+
+.copy-status.is-error {
+    color: var(--c-text);
+}
+
+/* Botones */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 2.5rem;              /* objetivo táctil ≥ 24px (WCAG 2.5.8) */
+    padding: var(--sp-2) var(--sp-4);
+    font: inherit;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--c-on-primary);
+    background: var(--c-primary);
+    border: 2px solid var(--c-primary);
+    border-radius: var(--radius);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--transition), color var(--transition);
+}
+
+.btn:hover {
+    background: var(--c-primary-strong);
+    border-color: var(--c-primary-strong);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn-ghost {
+    color: var(--c-primary);
+    background: transparent;
+}
+
+.btn-ghost:hover {
+    color: var(--c-on-primary);
+}
+
+.btn-small {
+    min-height: 2rem;
+    padding: var(--sp-1) var(--sp-3);
+    font-size: var(--fs-xs);
+}
+
+/* Tema: muestra el ícono de la acción disponible */
+.icon-sun {
+    display: none;
+}
+
+[data-theme-active="dark"] .icon-sun {
+    display: inline;
+}
+
+[data-theme-active="dark"] .icon-moon {
+    display: none;
+}
+
+/* Acciones flotantes: Volver arriba (H3) + WhatsApp, abajo a la derecha */
+.floating-actions {
+    position: fixed;
+    right: max(var(--sp-4), env(safe-area-inset-right));
+    bottom: max(var(--sp-4), env(safe-area-inset-bottom));
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--sp-2);
+}
+
+.fab {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-4);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    color: var(--c-on-primary);
+    background: var(--c-primary);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    transition: opacity var(--transition), transform var(--transition), background-color var(--transition);
+}
+
+.whatsapp-fab {
+    color: var(--c-on-whatsapp);
+    background: var(--c-whatsapp);
+}
+
+.whatsapp-fab:hover {
+    color: var(--c-on-whatsapp);
+    background: var(--c-whatsapp-strong);
+}
+
+.whatsapp-fab .icon {
+    width: 1.35em;
+    height: 1.35em;
+}
+
+.to-top:hover {
+    color: var(--c-on-primary);
+    background: var(--c-primary-strong);
+}
+
+/* Con JS se oculta hasta que el usuario baja; sin JS siempre está visible */
+.js .to-top:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(1rem);
+    pointer-events: none;
+}
+
+/* Si llega por teclado estando oculto, se muestra (nunca foco invisible) */
+.js .to-top:focus-visible {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+/* Marcadores de datos pendientes */
+.todo {
+    padding: 0 var(--sp-1);
+    background: var(--c-todo-bg);
+    color: var(--c-todo-text);
+    border: 1px dashed currentColor;
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+
+/* Móvil y tablet: menú colapsable (solo con JS) */
+@media (max-width: 71.99rem) {
+    .js .menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sp-2);
+        margin-left: auto;
+        min-height: 2.5rem;
+        padding: var(--sp-2) var(--sp-3);
+        font: inherit;
+        font-weight: 600;
+        color: var(--c-text);
+        background: transparent;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius);
+        cursor: pointer;
+    }
+
+    .js .menu-toggle:hover {
+        border-color: var(--c-primary);
+        color: var(--c-primary);
+    }
+
+    .js .menu-toggle[aria-expanded="true"] {
+        background: var(--c-tag-bg);
+        border-color: var(--c-primary);
+    }
+
+    .js .menu-panel {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--sp-4);
+        padding: var(--sp-4);
+        background: var(--c-surface);
+        border-bottom: 1px solid var(--c-border);
+        box-shadow: 0 8px 16px rgb(0 0 0 / 0.12);
+    }
+
+    .js .menu-panel.is-open {
+        display: flex;
+    }
+
+    .js .nav-list {
+        flex-direction: column;
+    }
+
+    .js .nav-link {
+        padding: var(--sp-3);
+        font-size: var(--fs-base);
+    }
+
+    .js .nav-link[aria-current="true"] {
+        border-bottom-color: transparent;
+        border-left: 3px solid var(--c-primary);
+        border-radius: 0 var(--radius) var(--radius) 0;
+        background: var(--c-tag-bg);
+    }
+
+    .js .header-actions {
+        flex-wrap: wrap;
+        padding-top: var(--sp-4);
+        border-top: 1px solid var(--c-border);
+    }
+
+    /* Sin JS: la navegación se mantiene visible como fila desplazable */
+    .no-js .header-inner {
+        flex-wrap: wrap;
+        padding-top: var(--sp-2);
+    }
+
+    .no-js .menu-panel {
+        margin-left: 0;
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+
+@media (min-width: 40rem) {
+    .profile-grid {
+        grid-template-columns: auto 1fr;
+        gap: var(--sp-6);
+    }
+
+    .contact-item {
+        grid-template-columns: 11rem 1fr;
+        align-items: center;
+    }
+}
+
+@media (min-width: 60rem) {
+    main {
+        padding-top: var(--sp-7);
+    }
+}
+
+/* Pantallas anchas: identidad a la izquierda y texto de perfil a la derecha */
+@media (min-width: 72rem) {
+    .section.profile {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+        column-gap: var(--sp-8);
+        align-items: center;
+    }
+
+    .section.profile > * {
+        grid-column: auto;
+    }
+
+    .section.profile > .profile-grid {
+        margin-bottom: 0;
+    }
+}
+
+/* ---------- 6. Utilidades ---------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Controles que dependen de JS no se muestran si JS falla */
+.no-js .js-only {
+    display: none !important;
+}
+
+/* ---------- 7. Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+
+    .js .to-top:not(.is-visible) {
+        transform: none;
+    }
+}
+
+/* ---------- 8. Impresión: B/N, sin navegación ---------- */
+@media print {
+    @page {
+        margin: 1.5cm;
+    }
+
+    /* Misma especificidad que las reglas del tema oscuro y declaradas después: siempre ganan */
+    :root,
+    :root:not([data-theme="light"]),
+    :root[data-theme] {
+        --c-primary: #000;
+        --c-primary-strong: #000;
+        --c-accent: #000;
+        --c-text: #000;
+        --c-text-muted: #333;
+        --c-bg: #fff;
+        --c-surface: #fff;
+        --c-border: #999;
+        --c-tag-bg: #fff;
+        --c-todo-bg: #fff;
+        --c-todo-text: #000;
+        color-scheme: light;
+    }
+
+    html {
+        font-size: 10.5pt;
+    }
+
+    body {
+        background: #fff;
+        color: #000;
+        line-height: 1.4;
+    }
+
+    p {
+        margin-bottom: 0.3rem;
+    }
+
+    .entry-list li + li {
+        margin-top: 0;
+    }
+
+    .skip-link,
+    .site-header,
+    .floating-actions,
+    .anchor,
+    .js-only,
+    .copy-status,
+    .icon {
+        display: none !important;
+    }
+
+    main {
+        padding: 0;
+    }
+
+    .section,
+    .section.profile {
+        display: block;
+        padding: 1.1rem 0 0.4rem;
+        border-top: 1px solid #999;
+    }
+
+    .section.profile {
+        padding-top: 0;
+    }
+
+    .profile-grid {
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .profile-photo {
+        width: 2.8cm;
+        border: 1px solid #000;
+        filter: grayscale(100%);
+    }
+
+    .section > .section-title,
+    .profile-about > .section-title {
+        margin-bottom: 0.6rem;
+    }
+
+    .section-title::before {
+        display: none;
+    }
+
+    .entry {
+        padding-bottom: 0.8rem;
+        border-left: 0;
+        padding-left: 0;
+        max-width: none;
+        break-inside: avoid;
+    }
+
+    .entry::before {
+        display: none;
+    }
+
+    .section-title,
+    .entry-header {
+        break-after: avoid;
+    }
+
+    .tag {
+        padding: 0;
+        border-radius: 0;
+    }
+
+    .tag:not(:last-child)::after {
+        content: " ·";
+    }
+
+    .skills {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .skill-group {
+        padding: 0;
+        border: 0;
+        break-inside: avoid;
+    }
+
+    a {
+        color: #000;
+        text-decoration: none;
+    }
+
+    /* Muestra la URL de los enlaces externos en papel */
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.85em;
+        font-weight: 400;
+        overflow-wrap: anywhere;
+    }
+
+    /* En Contacto el texto del enlace ya es la URL: no se repite */
+    .contact-value a[href^="http"]::after {
+        content: none;
+    }
+
+    .contact-item {
+        grid-template-columns: 9rem 1fr;
+        padding-bottom: 0.3rem;
+        break-inside: avoid;
+    }
+
+    .todo {
+        border: 1px dashed #000;
+    }
+
+    .site-footer {
+        padding: 0.6rem 0 0;
+    }
+}
