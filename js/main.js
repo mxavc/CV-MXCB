@@ -131,7 +131,6 @@
     var printBtn = document.getElementById('print-btn');
     if (printBtn) {
         printBtn.addEventListener('click', function () {
-            setMenu(false, false);
             window.print();
         });
     }
@@ -153,5 +152,32 @@
             }
         }, { passive: true });
         updateToTop();
+    }
+
+    /* ---------- Decoración «Bosque digital»: luz de luciérnaga que sigue al cursor ---------- */
+    // Solo con ratón y si el usuario no pidió reducir el movimiento. Sin naturaleza.css el
+    // elemento queda vacío e invisible. Se mueve con transform (no recalcula el diseño).
+    var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    var calmMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    if (finePointer.matches && !calmMotion.matches) {
+        var glow = document.createElement('div');
+        glow.className = 'cursor-glow';
+        glow.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(glow);
+
+        var glowFrame = 0;
+        window.addEventListener('pointermove', function (e) {
+            if (glowFrame) return;
+            glowFrame = requestAnimationFrame(function () {
+                glow.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
+                glow.classList.add('is-active');
+                glowFrame = 0;
+            });
+        }, { passive: true });
+
+        document.documentElement.addEventListener('pointerleave', function () {
+            glow.classList.remove('is-active');
+        });
     }
 })();

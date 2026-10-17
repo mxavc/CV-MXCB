@@ -1,0 +1,238 @@
+/* =========================================================
+   Capa experimental «Bosque digital» · naturalista-tecnológico
+   ---------------------------------------------------------
+   Se carga DESPUÉS de styles.css y solo en pantalla (media="screen"),
+   así que la impresión no cambia. Para volver al diseño «Cian neón»
+   basta con quitar su <link> en index.html.
+
+   Idea: la tecnología (cian, vidrio, datos) crece sobre la naturaleza
+   (musgo, curvas de nivel, células, luciérnagas).
+   - Color orgánico: degradados cian → musgo → petróleo y fundido al cambiar de tema.
+   - Desvanecimiento: los contenidos aparecen con un fundido al entrar en pantalla.
+   - Desplazamiento: las tarjetas entran alternando desde la izquierda y la derecha.
+   - Formas: bordes asimétricos tipo hoja, foto con contorno de célula.
+
+   Rendimiento: solo se animan opacity y transform, y solo al hacer scroll.
+   Sin bucles infinitos, sin filter/blur, sin backdrop-filter y sin animar
+   colores, fondos, bordes redondeados ni espaciado de letras.
+   ========================================================= */
+
+/* ---------- Tokens de la capa ---------- */
+:root {
+    --c-leaf: #2e7a55;   /* musgo: el tono natural que acompaña al cian */
+    --flow-1: var(--c-accent);
+    --flow-2: var(--c-leaf);
+
+    /* Degradados vivos: usan los colores que fluyen */
+    --grad-brand: linear-gradient(120deg, var(--c-primary), var(--flow-1), var(--flow-2));
+    --grad-line: linear-gradient(90deg, transparent, var(--flow-1) 25%, var(--flow-2) 75%, transparent);
+    /* Texto: el tono que fluye se mezcla con el primario para mantener ≥ 3:1 */
+    --grad-text: linear-gradient(100deg,
+        var(--c-primary) 0%,
+        color-mix(in srgb, var(--c-primary) 40%, var(--flow-1)) 35%,
+        color-mix(in srgb, var(--c-primary) 40%, var(--flow-2)) 65%,
+        var(--c-primary) 100%);
+
+    /* Forma de hoja: esquinas asimétricas */
+    --leaf-a: 2rem 0.6rem 2rem 0.6rem;
+    --leaf-b: 0.6rem 2rem 0.6rem 2rem;
+    --ease-organic: cubic-bezier(.33, 1, .68, 1);
+    --glow: 0 0 0 1px color-mix(in srgb, var(--flow-1) 25%, transparent),
+            0 10px 24px -12px color-mix(in srgb, var(--flow-2) 60%, transparent);
+    --glow-strong: 0 0 0 1px color-mix(in srgb, var(--flow-1) 45%, transparent),
+                   0 12px 28px -12px color-mix(in srgb, var(--flow-2) 70%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --c-leaf: #7fdca6;
+    }
+}
+
+:root[data-theme="dark"] {
+    --c-leaf: #7fdca6;
+}
+
+/* Al cambiar de tema, los colores se funden en lugar de saltar */
+body {
+    transition: background-color 900ms var(--ease-organic), color 900ms var(--ease-organic);
+}
+
+a,
+.nav-link,
+.tag,
+.btn {
+    transition-duration: 450ms;
+    transition-timing-function: var(--ease-organic);
+}
+
+/* ---------- Fondo: bosque de luz ---------- */
+/* Manchas orgánicas (células / copas de árboles) en cian, musgo y petróleo, más
+   luciérnagas fijas en un mosaico pequeño. Pintado en el body: se rasteriza una vez. */
+body {
+    background:
+        radial-gradient(circle, color-mix(in srgb, var(--flow-1) 70%, transparent) 0 1.5px, transparent 2.5px) 0 0 / 208px 240px,
+        radial-gradient(circle, color-mix(in srgb, var(--c-leaf) 65%, transparent) 0 1px, transparent 2px) 90px 120px / 304px 272px,
+        radial-gradient(55vw 50vh at 15% 4%, color-mix(in srgb, var(--flow-1) 30%, transparent), transparent 70%) no-repeat,
+        radial-gradient(50vw 55vh at 90% 28%, color-mix(in srgb, var(--flow-2) 18%, transparent), transparent 70%) no-repeat,
+        radial-gradient(55vw 50vh at 25% 70%, color-mix(in srgb, var(--c-leaf) 18%, transparent), transparent 70%) no-repeat,
+        radial-gradient(45vw 45vh at 80% 95%, color-mix(in srgb, var(--c-primary) 14%, transparent), transparent 70%) no-repeat,
+        var(--c-bg);
+}
+
+/* Luz de luciérnaga que sigue al cursor (el elemento lo crea main.js solo con ratón).
+   Tamaño en px (no en rem) para que la capa no crezca con la escala de la página. */
+.cursor-glow {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    width: 420px;
+    height: 420px;
+    margin: -210px 0 0 -210px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, color-mix(in srgb, var(--flow-1) 22%, transparent), transparent 65%);
+    opacity: 0;
+    transition: opacity 600ms var(--ease-organic);
+    will-change: transform;   /* capa propia: moverla no repinta la página */
+}
+
+.cursor-glow.is-active {
+    opacity: 1;
+}
+
+/* ---------- Componentes con forma orgánica ---------- */
+.entry,
+.skill-group {
+    border-radius: var(--leaf-a);
+    background:
+        linear-gradient(var(--glass), var(--glass)) padding-box,
+        linear-gradient(140deg,
+            color-mix(in srgb, var(--flow-1) 75%, transparent),
+            color-mix(in srgb, var(--flow-2) 15%, transparent) 45%,
+            color-mix(in srgb, var(--flow-2) 65%, transparent)) border-box;
+    transition:
+        translate 600ms var(--ease-organic),
+        box-shadow 600ms var(--ease-organic),
+        border-radius 500ms var(--ease-organic);
+}
+
+/* Al pasar el cursor la hoja «se gira»: las esquinas cambian de lado */
+.entry:hover,
+.skill-group:hover {
+    border-radius: var(--leaf-b);
+}
+
+/* La barra lateral es un tallo: degradado de cian a musgo */
+.entry::before {
+    background: linear-gradient(180deg, var(--flow-1), var(--flow-2) 70%, transparent);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--flow-1) 60%, transparent);
+    transform-origin: top;
+}
+
+.entry-list li::marker {
+    color: var(--c-leaf);
+}
+
+/* Foto con contorno de célula / hoja y anillo de luz cian-musgo */
+.profile-photo {
+    border-radius: 3.5rem 1.25rem 3.5rem 1.25rem;
+    background: conic-gradient(from 210deg,
+        var(--c-primary), var(--flow-1), var(--flow-2), var(--c-leaf), var(--c-primary));
+    box-shadow:
+        0 0 24px -6px color-mix(in srgb, var(--flow-1) 65%, transparent),
+        0 0 48px -12px color-mix(in srgb, var(--c-leaf) 45%, transparent);
+}
+
+/* Las líneas junto a los títulos se convierten en hojas */
+.section-title::before,
+.section-title::after {
+    width: clamp(1.75rem, 5vw, 3rem);
+    height: 0.6rem;
+    border-radius: 0 100% 0 100%;
+    background: linear-gradient(90deg, var(--flow-2), var(--flow-1));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--flow-1) 55%, transparent);
+}
+
+.section-title::after {
+    border-radius: 100% 0 100% 0;
+    background: linear-gradient(90deg, var(--flow-1), var(--flow-2));
+}
+
+.skill-group dt::before {
+    width: 2.25rem;
+    height: 0.5rem;
+    border-radius: 0 100% 0 100%;
+}
+
+.eyebrow::before {
+    content: "❦ " / "";
+    color: var(--c-leaf);
+}
+
+.tag:hover {
+    background:
+        linear-gradient(color-mix(in srgb, var(--c-tag-bg) 70%, var(--flow-2)), color-mix(in srgb, var(--c-tag-bg) 70%, var(--flow-2))) padding-box,
+        var(--grad-brand) border-box;
+}
+
+/* La línea de luz entre secciones: enredadera en degradado (estática) */
+.section:not(.profile),
+.site-footer {
+    background: var(--grad-line) top center / 100% 1px no-repeat;
+}
+
+/* ---------- Movimiento orgánico (solo si el usuario no pidió reducirlo) ----------
+   Todo va ligado al scroll y usa solo opacity/transform: el navegador lo
+   resuelve en la GPU y no trabaja cuando la página está quieta. */
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        /* Fundido de los títulos al entrar en pantalla */
+        .section-title {
+            animation: fade-up linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 30%;
+        }
+
+        /* Las entradas llegan alternando desde la izquierda y la derecha */
+        .entry:nth-of-type(odd) {
+            animation: drift-left linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 28%;
+        }
+
+        .entry:nth-of-type(even) {
+            animation: drift-right linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 28%;
+        }
+
+        .skill-group {
+            animation: fade-up linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 22%;
+        }
+    }
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(1.25rem);
+    }
+}
+
+@keyframes drift-left {
+    from {
+        opacity: 0;
+        transform: translateX(-3rem) rotate(-1.5deg);
+    }
+}
+
+@keyframes drift-right {
+    from {
+        opacity: 0;
+        transform: translateX(3rem) rotate(1.5deg);
+    }
+}

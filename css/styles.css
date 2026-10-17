@@ -1,24 +1,26 @@
 /* =========================================================
    CV · Marlon Xavier Chimarro Bermeo
+   Estilo futurista: vidrio esmerilado, degradados y brillos
+   sobre la paleta cian neón (azul petróleo / cian).
    Índice:
    1. Tokens (variables)   5. Componentes
    2. Tema oscuro          6. Utilidades
-   3. Base                 7. Movimiento reducido
+   3. Base y fondo         7. Movimiento (solo si el usuario lo permite)
    4. Layout               8. Impresión
    ========================================================= */
 
 /* ---------- 1. Tokens ---------- */
 :root {
     /* Paleta: 2 colores + neutros */
-    --c-primary: #4b1f78;          /* púrpura oscuro: enlaces, navegación, activo, foco */
-    --c-primary-strong: #34134f;   /* hover/active del primario */
-    --c-accent: #9a7cc4;           /* lavanda: solo detalles decorativos */
-    --c-text: #221c2b;
-    --c-text-muted: #544b61;
-    --c-bg: #f7f5fa;
+    --c-primary: #0b4a63;          /* azul petróleo: enlaces, navegación, activo, foco */
+    --c-primary-strong: #07344a;   /* hover/active del primario */
+    --c-accent: #1a9cb8;           /* cian: degradados, brillos y detalles */
+    --c-text: #14232b;
+    --c-text-muted: #45606b;
+    --c-bg: #f3f8fa;
     --c-surface: #ffffff;
-    --c-border: #ddd6e6;
-    --c-tag-bg: #eee8f6;
+    --c-border: #d3e3e9;
+    --c-tag-bg: #e2f1f5;
     --c-todo-bg: #fff3c4;
     --c-todo-text: #4d3b00;
     --c-on-primary: #ffffff;
@@ -26,9 +28,23 @@
     --c-whatsapp-strong: #1ebe5b;
     --c-on-whatsapp: #062b16;
 
-    /* Tipografía: 2 familias del sistema (sin descargas) */
-    --font-serif: Georgia, "Times New Roman", serif;
-    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Degradados y efectos: todos derivan de los dos colores de la paleta */
+    --grad-brand: linear-gradient(120deg, var(--c-primary), var(--c-accent));
+    /* Texto: el tono claro se mezcla con el primario para mantener ≥ 3:1 incluso sobre las auroras */
+    --grad-text: linear-gradient(100deg, var(--c-primary) 0%, color-mix(in srgb, var(--c-primary) 40%, var(--c-accent)) 50%, var(--c-primary) 100%);
+    /* Relleno de botones: el extremo claro se mezcla con el primario para mantener contraste ≥ 4.5:1 */
+    --grad-fill: linear-gradient(135deg, var(--c-primary), color-mix(in srgb, var(--c-primary) 62%, var(--c-accent)));
+    --grad-line: linear-gradient(90deg, transparent, var(--c-accent) 30%, var(--c-primary) 70%, transparent);
+    --glass: color-mix(in srgb, var(--c-surface) 72%, transparent);
+    --glass-strong: color-mix(in srgb, var(--c-surface) 86%, transparent);
+    --glow: 0 0 0 1px color-mix(in srgb, var(--c-accent) 25%, transparent),
+            0 10px 24px -12px color-mix(in srgb, var(--c-accent) 60%, transparent);
+    --glow-strong: 0 0 0 1px color-mix(in srgb, var(--c-accent) 45%, transparent),
+                   0 12px 28px -12px color-mix(in srgb, var(--c-accent) 75%, transparent);
+
+    /* Tipografía: 2 familias del sistema (sin descargas): sans para todo, mono para datos técnicos */
+    --font-sans: system-ui, -apple-system, "Segoe UI Variable", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
     /* La raíz crece hasta 2.5× (ver html): el texto usa la mitad de esa escala,
        con un mínimo en px para que siga legible en móvil. El espaciado no cambia. */
     --fs-xs: max(0.4375rem, 14px);
@@ -38,7 +54,7 @@
     --fs-lg: max(1.1875rem, 30px);
     --fs-xl: max(2rem, 40px);
     --fs-nav: max(0.59375rem, 19px);
-    --lh-tight: 1.2;
+    --lh-tight: 1.15;
     --lh-base: 1.65;
 
     /* Espaciado (escala 4px) */
@@ -52,7 +68,8 @@
     --sp-8: 4.5rem;
     --sp-9: 6rem;
 
-    --radius: 10px;
+    --radius: 12px;
+    --radius-lg: 20px;
     --radius-pill: 999px;
     --page-gutter: clamp(1rem, 4vw, 3rem);  /* margen lateral fluido */
     --page-max: 76rem;                      /* ancho máximo del contenido (en rem: crece con la letra) */
@@ -60,41 +77,41 @@
     --prose-max: 68ch;
     --header-h: 7rem;               /* alto de la cabecera fija; main.js lo mide y actualiza */
     --focus-ring: 3px solid var(--c-primary);
-    --transition: 160ms ease;
+    --transition: 220ms cubic-bezier(.2, .7, .2, 1);
 }
 
 /* ---------- 2. Tema oscuro (sistema + manual) ---------- */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-        --c-primary: #c9a8f0;
-        --c-primary-strong: #e0cdf8;
-        --c-accent: #8f6cc0;
-        --c-text: #ece8f2;
-        --c-text-muted: #bdb3cb;
-        --c-bg: #141019;
-        --c-surface: #1d1725;
-        --c-border: #352c42;
-        --c-tag-bg: #2a2136;
+        --c-primary: #67e3f5;
+        --c-primary-strong: #a5f0fa;
+        --c-accent: #0e8fae;
+        --c-text: #e4f3f7;
+        --c-text-muted: #a9c4cc;
+        --c-bg: #081218;
+        --c-surface: #0f1d25;
+        --c-border: #1f3a46;
+        --c-tag-bg: #15303a;
         --c-todo-bg: #4d3b00;
         --c-todo-text: #fff3c4;
-        --c-on-primary: #141019;
+        --c-on-primary: #081218;
         color-scheme: dark;
     }
 }
 
 :root[data-theme="dark"] {
-    --c-primary: #c9a8f0;
-    --c-primary-strong: #e0cdf8;
-    --c-accent: #8f6cc0;
-    --c-text: #ece8f2;
-    --c-text-muted: #bdb3cb;
-    --c-bg: #141019;
-    --c-surface: #1d1725;
-    --c-border: #352c42;
-    --c-tag-bg: #2a2136;
+    --c-primary: #67e3f5;
+    --c-primary-strong: #a5f0fa;
+    --c-accent: #0e8fae;
+    --c-text: #e4f3f7;
+    --c-text-muted: #a9c4cc;
+    --c-bg: #081218;
+    --c-surface: #0f1d25;
+    --c-border: #1f3a46;
+    --c-tag-bg: #15303a;
     --c-todo-bg: #4d3b00;
     --c-todo-text: #fff3c4;
-    --c-on-primary: #141019;
+    --c-on-primary: #081218;
     color-scheme: dark;
 }
 
@@ -102,7 +119,7 @@
     color-scheme: light;
 }
 
-/* ---------- 3. Base ---------- */
+/* ---------- 3. Base y fondo ---------- */
 *,
 *::before,
 *::after {
@@ -115,6 +132,7 @@ html {
     font-size: clamp(100%, 0.32rem + 1.82vw, 250%);
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h) + var(--sp-4));
+    scrollbar-color: var(--c-accent) transparent;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -124,7 +142,18 @@ body {
     font-size: var(--fs-base);
     line-height: var(--lh-base);
     color: var(--c-text);
-    background: var(--c-bg);
+    /* Fondo de auroras pintado en el propio body: se desplaza con la página y se
+       rasteriza una sola vez (sin capas fijas, máscaras ni filtros: rendimiento) */
+    background:
+        radial-gradient(60vw 50vh at 18% 4%, color-mix(in srgb, var(--c-accent) 30%, transparent), transparent 70%) no-repeat,
+        radial-gradient(50vw 60vh at 90% 30%, color-mix(in srgb, var(--c-primary) 18%, transparent), transparent 70%) no-repeat,
+        radial-gradient(60vw 50vh at 30% 85%, color-mix(in srgb, var(--c-accent) 22%, transparent), transparent 70%) no-repeat,
+        var(--c-bg);
+}
+
+::selection {
+    background: color-mix(in srgb, var(--c-accent) 45%, transparent);
+    color: var(--c-text);
 }
 
 img {
@@ -183,6 +212,18 @@ main:focus {
     height: 0.85em;
 }
 
+/* Texto con degradado (nombre, marca y títulos). Contraste ≥ 3:1 en ambos extremos: solo texto grande. */
+.brand,
+.name,
+.section-title {
+    background-image: var(--grad-text);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--c-primary);   /* respaldo si no hay background-clip: text */
+}
+
 /* ---------- 4. Layout ---------- */
 .skip-link {
     position: absolute;
@@ -201,12 +242,23 @@ main:focus {
     color: var(--c-on-primary);
 }
 
+/* Cabecera translúcida (sin backdrop-filter, por rendimiento) con una línea de luz en el borde inferior */
 .site-header {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--c-surface);
-    border-bottom: 1px solid var(--c-border);
+    background: var(--glass-strong);
+    box-shadow: 0 6px 16px -12px color-mix(in srgb, var(--c-primary) 45%, transparent);
+}
+
+.site-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--grad-line);
 }
 
 .header-inner {
@@ -220,16 +272,15 @@ main:focus {
 }
 
 .brand {
-    font-family: var(--font-serif);
     font-size: var(--fs-md);
-    font-weight: 700;
-    color: var(--c-text);
+    font-weight: 800;
+    letter-spacing: -0.01em;
     text-decoration: none;
     white-space: nowrap;
 }
 
 .brand:hover {
-    color: var(--c-primary);
+    background-position: 100% 0;
 }
 
 /* Cabecera en dos filas: nombre y acciones arriba; secciones del CV abajo, centradas.
@@ -256,32 +307,34 @@ main:focus {
 .nav-link {
     display: block;
     padding: var(--sp-2) var(--sp-4);
-    border-radius: var(--radius);
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-pill);
     color: var(--c-primary);
     font-size: var(--fs-nav);
     font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     text-decoration: none;
-    border-bottom: 3px solid transparent;
-    transition: color var(--transition), background-color var(--transition);
+    transition: color var(--transition), background-color var(--transition), box-shadow var(--transition);
 }
 
 .nav-link:hover {
     color: var(--c-primary-strong);
-    background: var(--c-tag-bg);
+    background-color: var(--c-tag-bg);
 }
 
 .nav-link:active {
-    background: var(--c-border);
+    background-color: var(--c-border);
 }
 
-/* H1 · sección activa (lo marca main.js con aria-current) */
+/* H1 · sección activa (lo marca main.js con aria-current): píldora con borde degradado y brillo */
 .nav-link[aria-current="true"] {
     color: var(--c-primary-strong);
     font-weight: 800;
-    background: var(--c-tag-bg);
-    border-bottom-color: var(--c-primary);
-    border-radius: var(--radius) var(--radius) 0 0;
+    background:
+        linear-gradient(var(--c-tag-bg), var(--c-tag-bg)) padding-box,
+        var(--grad-brand) border-box;
+    box-shadow: var(--glow);
 }
 
 .header-actions {
@@ -299,7 +352,8 @@ main {
 }
 
 /* Cada sección es una cuadrícula fluida: las entradas se reparten en tantas
-   columnas como quepan (mín. --col-min) y se reacomodan al redimensionar. */
+   columnas como quepan (mín. --col-min) y se reacomodan al redimensionar.
+   El separador superior es una línea de luz en degradado. */
 .section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr));
@@ -307,7 +361,7 @@ main {
     gap: var(--sp-7);
     align-items: start;
     padding: var(--sp-9) 0 var(--sp-8);
-    border-top: 1px solid var(--c-border);
+    background: var(--grad-line) top center / 100% 1px no-repeat;
 }
 
 .section > :not(.entry) {
@@ -321,7 +375,7 @@ main {
 .section.profile {
     display: block;
     padding-top: var(--sp-6);
-    border-top: 0;
+    background: none;
     text-align: center;
 }
 
@@ -346,9 +400,11 @@ main {
     align-items: center;
     gap: var(--sp-2);
     text-align: center;
-    border-top: 1px solid var(--c-border);
+    background: var(--grad-line) top center / 100% 1px no-repeat;
     color: var(--c-text-muted);
-    font-size: var(--fs-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
 }
 
 .site-footer p {
@@ -356,6 +412,28 @@ main {
 }
 
 /* ---------- 5. Componentes ---------- */
+
+/* Tarjeta de vidrio con borde en degradado (entradas, habilidades) */
+.entry,
+.skill-group {
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: var(--radius-lg);
+    background:
+        linear-gradient(var(--glass), var(--glass)) padding-box,
+        linear-gradient(140deg,
+            color-mix(in srgb, var(--c-accent) 80%, transparent),
+            color-mix(in srgb, var(--c-accent) 15%, transparent) 45%,
+            color-mix(in srgb, var(--c-primary) 60%, transparent)) border-box;
+    box-shadow: 0 8px 20px -16px color-mix(in srgb, var(--c-primary) 55%, transparent);
+    transition: translate var(--transition), box-shadow var(--transition);
+}
+
+.entry:hover,
+.skill-group:hover {
+    translate: 0 -4px;
+    box-shadow: var(--glow-strong);
+}
 
 /* Perfil */
 .profile-grid {
@@ -367,25 +445,46 @@ main {
     margin-bottom: var(--sp-9);
 }
 
+/* Foto con anillo de luz fijo (conic-gradient en el relleno) y halo */
 .profile-photo {
     width: clamp(320px, 36vw, 520px);   /* solo se escala; proporción original 4:5 sin recorte */
-    border-radius: var(--radius);
-    border: 3px solid var(--c-accent);
+    padding: 5px;
+    border-radius: calc(var(--radius-lg) + 6px);
+    background: conic-gradient(from 210deg,
+        var(--c-primary), var(--c-accent), var(--c-primary-strong), var(--c-accent), var(--c-primary));
+    box-shadow:
+        0 0 24px -6px color-mix(in srgb, var(--c-accent) 70%, transparent),
+        0 0 48px -12px color-mix(in srgb, var(--c-primary) 45%, transparent);
 }
 
+/* Etiqueta tipo "chip" de terminal */
 .eyebrow {
-    margin: 0 0 var(--sp-2);
+    display: inline-block;
+    margin: 0 0 var(--sp-4);
+    padding: var(--sp-1) var(--sp-4);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    background:
+        linear-gradient(var(--glass-strong), var(--glass-strong)) padding-box,
+        var(--grad-brand) border-box;
+    font-family: var(--font-mono);
     font-size: var(--fs-xs);
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--c-text-muted);
 }
 
+.eyebrow::before {
+    content: "▸ " / "";   /* decorativo: sin texto para lectores de pantalla */
+    color: var(--c-primary);
+}
+
 .name {
-    font-family: var(--font-serif);
     font-size: var(--fs-xl);
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
 }
 
 .role {
@@ -398,7 +497,7 @@ main {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var(--sp-2) var(--sp-5);
+    gap: var(--sp-3);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -408,20 +507,36 @@ main {
     display: inline-flex;
     align-items: center;
     gap: var(--sp-2);
-    padding: var(--sp-1) 0;
-    font-weight: 500;
+    padding: var(--sp-2) var(--sp-4);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    background:
+        linear-gradient(var(--glass-strong), var(--glass-strong)) padding-box,
+        var(--grad-brand) border-box;
+    font-weight: 600;
+    text-decoration: none;
     overflow-wrap: anywhere;
+    transition: box-shadow var(--transition), translate var(--transition);
 }
 
-/* Títulos de sección con ancla compartible */
+.quick-contact a:hover {
+    translate: 0 -2px;
+    box-shadow: var(--glow);
+}
+
+/* Títulos de sección con ancla compartible: texto en degradado entre dos rayos de luz */
 .section-title {
     display: flex;
     justify-content: center;
     align-items: baseline;
     gap: var(--sp-4);
-    margin-bottom: var(--sp-6);
-    font-family: var(--font-serif);
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto var(--sp-6);
+    justify-self: center;
     font-size: var(--fs-lg);
+    font-weight: 800;
+    letter-spacing: -0.015em;
     text-align: center;
 }
 
@@ -431,14 +546,20 @@ main {
     align-self: center;
     width: clamp(1.5rem, 6vw, 4rem);
     height: 3px;
-    background: var(--c-accent);
     border-radius: 2px;
+    background: linear-gradient(90deg, transparent, var(--c-accent));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--c-accent) 70%, transparent);
+}
+
+.section-title::after {
+    background: linear-gradient(90deg, var(--c-accent), transparent);
 }
 
 .anchor {
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     font-size: var(--fs-base);
     color: var(--c-text-muted);
+    -webkit-text-fill-color: currentColor;
     text-decoration: none;
     padding: 0 var(--sp-2);
     opacity: 0.7;
@@ -452,9 +573,10 @@ main {
 
 .subheading {
     margin: var(--sp-7) 0 var(--sp-4);
+    font-family: var(--font-mono);
     font-size: var(--fs-sm);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--c-text-muted);
 }
@@ -464,23 +586,21 @@ main {
     margin-inline: auto;
 }
 
-/* Entrada única (experiencia, educación, proyectos) */
+/* Entrada única (experiencia, educación, proyectos): tarjeta con barra de luz lateral */
 .entry {
-    position: relative;
-    padding: 0 0 var(--sp-4) var(--sp-5);
-    border-left: 2px solid var(--c-border);
+    padding: var(--sp-5) var(--sp-5) var(--sp-5) var(--sp-6);
 }
 
 .entry::before {
     content: "";
     position: absolute;
-    left: -7px;
-    top: 0.45em;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--c-surface);
-    border: 2px solid var(--c-primary);
+    left: var(--sp-3);
+    top: var(--sp-5);
+    bottom: var(--sp-5);
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--c-accent), var(--c-primary) 60%, transparent);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--c-accent) 70%, transparent);
 }
 
 .entry-header {
@@ -489,17 +609,21 @@ main {
 
 .entry-title {
     font-size: var(--fs-md);
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.01em;
 }
 
 .entry-org {
     margin: var(--sp-1) 0 0;
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--c-primary);
 }
 
 .entry-meta {
-    margin: var(--sp-1) 0 0;
-    font-size: var(--fs-sm);
+    margin: var(--sp-2) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
     color: var(--c-text-muted);
 }
 
@@ -512,7 +636,11 @@ main {
     margin-top: var(--sp-2);
 }
 
-/* Etiquetas */
+.entry-list li::marker {
+    color: var(--c-accent);
+}
+
+/* Etiquetas: píldoras con borde degradado */
 .tag-list {
     display: flex;
     flex-wrap: wrap;
@@ -524,8 +652,12 @@ main {
 
 .tag {
     padding: var(--sp-1) var(--sp-3);
+    border: 1px solid transparent;
     border-radius: var(--radius-pill);
-    background: var(--c-tag-bg);
+    background:
+        linear-gradient(var(--c-tag-bg), var(--c-tag-bg)) padding-box,
+        var(--grad-brand) border-box;
+    font-family: var(--font-mono);
     font-size: var(--fs-xs);
     font-weight: 500;
 }
@@ -539,18 +671,27 @@ main {
 }
 
 .skill-group {
-    padding: var(--sp-5);
+    padding: var(--sp-6) var(--sp-5) var(--sp-5);
     text-align: center;
-    background: var(--c-surface);
-    border: 1px solid var(--c-border);
-    border-radius: var(--radius);
 }
 
 .skill-group dt {
     font-size: var(--fs-md);
-    font-weight: 700;
+    font-weight: 800;
     color: var(--c-primary);
     margin-bottom: var(--sp-2);
+}
+
+/* Barra de luz sobre el título de cada grupo */
+.skill-group dt::before {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    margin: 0 auto var(--sp-3);
+    border-radius: 3px;
+    background: var(--grad-brand);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--c-accent) 70%, transparent);
 }
 
 .skill-group dd {
@@ -573,14 +714,18 @@ main {
     grid-template-columns: 1fr;
     gap: var(--sp-2);
     padding-bottom: var(--sp-5);
-    border-bottom: 1px solid var(--c-border);
+    background: linear-gradient(90deg, var(--c-accent), transparent) bottom left / 100% 1px no-repeat;
 }
 
 .contact-label {
     display: inline-flex;
     align-items: center;
     gap: var(--sp-2);
-    font-weight: 600;
+    font-weight: 700;
+}
+
+.contact-label .icon {
+    color: var(--c-primary);
 }
 
 .contact-value {
@@ -592,7 +737,7 @@ main {
 }
 
 .contact-value a {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .copy-status {
@@ -605,7 +750,7 @@ main {
     color: var(--c-text);
 }
 
-/* Botones */
+/* Botones: relleno en degradado que se desplaza y brilla al pasar el cursor */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -614,19 +759,21 @@ main {
     padding: var(--sp-2) var(--sp-4);
     font: inherit;
     font-size: var(--fs-sm);
-    font-weight: 600;
+    font-weight: 700;
     color: var(--c-on-primary);
-    background: var(--c-primary);
-    border: 2px solid var(--c-primary);
-    border-radius: var(--radius);
+    background: var(--grad-fill) border-box;
+    background-size: 160% 100%;
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-pill);
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color var(--transition), color var(--transition);
+    transition: background-position var(--transition), box-shadow var(--transition), color var(--transition);
 }
 
 .btn:hover {
-    background: var(--c-primary-strong);
-    border-color: var(--c-primary-strong);
+    color: var(--c-on-primary);
+    background-position: 100% 0;
+    box-shadow: var(--glow-strong);
 }
 
 .btn:active {
@@ -635,11 +782,13 @@ main {
 
 .btn-ghost {
     color: var(--c-primary);
-    background: transparent;
+    background:
+        linear-gradient(var(--glass-strong), var(--glass-strong)) padding-box,
+        var(--grad-brand) border-box;
 }
 
 .btn-ghost:hover {
-    color: var(--c-on-primary);
+    background: var(--grad-fill) border-box;
 }
 
 .btn-small {
@@ -679,19 +828,20 @@ main {
     align-items: center;
     gap: var(--sp-2);
     padding: var(--sp-2) var(--sp-4);
-    font-weight: 600;
+    font-weight: 700;
     font-size: var(--fs-sm);
     color: var(--c-on-primary);
-    background: var(--c-primary);
+    background: var(--grad-fill);
     border-radius: var(--radius-pill);
     text-decoration: none;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-    transition: opacity var(--transition), transform var(--transition), background-color var(--transition);
+    box-shadow: var(--glow);
+    transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .whatsapp-fab {
     color: var(--c-on-whatsapp);
     background: var(--c-whatsapp);
+    box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--c-whatsapp) 80%, transparent);
 }
 
 .whatsapp-fab:hover {
@@ -706,7 +856,7 @@ main {
 
 .to-top:hover {
     color: var(--c-on-primary);
-    background: var(--c-primary-strong);
+    box-shadow: var(--glow-strong);
 }
 
 /* Con JS se oculta hasta que el usuario baja; sin JS siempre está visible */
@@ -745,7 +895,7 @@ main {
     }
 
     .site-header {
-        position: static;
+        position: relative;
     }
 
     .header-inner {
@@ -789,7 +939,51 @@ main {
     display: none !important;
 }
 
-/* ---------- 7. Movimiento reducido ---------- */
+/* ---------- 7. Movimiento: solo si el usuario no pidió reducirlo ----------
+   Rendimiento: solo se animan opacity y transform (los procesa la GPU).
+   Sin bucles infinitos, sin filter/blur animados y sin animar colores ni fondos. */
+@media (prefers-reduced-motion: no-preference) {
+    /* H1 · barra de progreso de lectura en el borde de la cabecera (sin JS) */
+    @supports (animation-timeline: scroll()) {
+        .site-header::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            height: 3px;
+            background: var(--grad-brand);
+            box-shadow: 0 0 8px var(--c-accent);
+            transform-origin: left;
+            animation: progress linear both;
+            animation-timeline: scroll(root);
+        }
+    }
+
+    /* Las tarjetas aparecen al entrar en pantalla (sin JS) */
+    @supports (animation-timeline: view()) {
+        .entry,
+        .skill-group {
+            animation: rise linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 22%;
+        }
+    }
+}
+
+@keyframes progress {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(2rem) scale(0.97);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
@@ -808,7 +1002,7 @@ main {
     }
 }
 
-/* ---------- 8. Impresión: B/N, sin navegación ---------- */
+/* ---------- 8. Impresión: B/N, sin navegación ni efectos ---------- */
 @media print {
     @page {
         margin: 1.5cm;
@@ -846,6 +1040,55 @@ main {
         background: #fff;
         color: #000;
         line-height: 1.4;
+    }
+
+    /* Sin degradados, brillos ni animaciones en papel (el fondo ya es #fff arriba) */
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        filter: none !important;
+    }
+
+    .brand,
+    .name,
+    .section-title {
+        background: none;
+        -webkit-text-fill-color: currentColor;
+        color: #000;
+    }
+
+    .entry,
+    .skill-group,
+    .tag,
+    .eyebrow,
+    .quick-contact a,
+    .contact-item,
+    .section,
+    .site-footer {
+        background: none;
+    }
+
+    .eyebrow,
+    .quick-contact a {
+        padding: 0;
+        border: 0;
+    }
+
+    .eyebrow::before {
+        content: none;
+    }
+
+    .quick-contact {
+        gap: 0.2rem 1.2rem;
+    }
+
+    .site-footer {
+        font-family: var(--font-sans);
     }
 
     p {
@@ -897,6 +1140,7 @@ main {
 
     .section.profile {
         padding-top: 0;
+        border-top: 0;
     }
 
     .profile-grid {
@@ -908,8 +1152,11 @@ main {
 
     .profile-photo {
         width: 2.8cm;
+        padding: 0;
+        background: none;
         border: 1px solid #000;
-        filter: grayscale(100%);
+        border-radius: 6px;
+        filter: grayscale(100%) !important;
     }
 
     .section > .section-title,
@@ -919,17 +1166,19 @@ main {
 
     .section-title {
         justify-content: flex-start;
+        margin-left: 0;
     }
 
     .section-title::before,
-    .section-title::after {
+    .section-title::after,
+    .skill-group dt::before {
         display: none;
     }
 
     .entry {
-        padding-bottom: 0.8rem;
-        border-left: 0;
-        padding-left: 0;
+        padding: 0 0 0.8rem;
+        border: 0;
+        border-radius: 0;
         max-width: none;
         break-inside: avoid;
     }
@@ -945,6 +1194,7 @@ main {
 
     .tag {
         padding: 0;
+        border: 0;
         border-radius: 0;
     }
 

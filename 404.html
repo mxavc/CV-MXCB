@@ -6,7 +6,7 @@
     <meta name="color-scheme" content="light dark">
     <meta name="robots" content="noindex">
     <title>Página no encontrada | CV Marlon Chimarro</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%234b1f78'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='28' font-weight='700' fill='%23fff' text-anchor='middle'%3EMC%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b4a63'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='28' font-weight='700' fill='%23fff' text-anchor='middle'%3EMC%3C/text%3E%3C/svg%3E">
     <!--
         Estilos en línea a propósito: GitHub Pages sirve este archivo para
         CUALQUIER ruta inexistente (p. ej. /repo/a/b/c), así que una hoja de
@@ -14,25 +14,24 @@
     -->
     <style>
         :root {
-            --c-primary: #4b1f78;
-            --c-primary-strong: #34134f;
-            --c-accent: #9a7cc4;
-            --c-text: #221c2b;
-            --c-text-muted: #544b61;
-            --c-bg: #f7f5fa;
+            --c-primary: #0b4a63;
+            --c-primary-strong: #07344a;
+            --c-accent: #1a9cb8;
+            --c-text: #14232b;
+            --c-text-muted: #45606b;
+            --c-bg: #f3f8fa;
             --c-on-primary: #ffffff;
-            --font-serif: Georgia, "Times New Roman", serif;
             --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         }
         @media (prefers-color-scheme: dark) {
             :root {
-                --c-primary: #c9a8f0;
-                --c-primary-strong: #e0cdf8;
-                --c-accent: #8f6cc0;
-                --c-text: #ece8f2;
-                --c-text-muted: #bdb3cb;
-                --c-bg: #141019;
-                --c-on-primary: #141019;
+                --c-primary: #67e3f5;
+                --c-primary-strong: #a5f0fa;
+                --c-accent: #0e8fae;
+                --c-text: #e4f3f7;
+                --c-text-muted: #a9c4cc;
+                --c-bg: #081218;
+                --c-on-primary: #081218;
             }
         }
         * { box-sizing: border-box; }
@@ -47,22 +46,45 @@
             color: var(--c-text);
             background: var(--c-bg);
         }
+        /* Mismo fondo futurista que el CV: auroras en degradado + retícula */
+        body::before, body::after { content: ""; position: fixed; z-index: -1; pointer-events: none; }
+        body::before {
+            inset: -20%;
+            background:
+                radial-gradient(45% 40% at 20% 15%, color-mix(in srgb, var(--c-accent) 30%, transparent), transparent 70%),
+                radial-gradient(40% 38% at 85% 75%, color-mix(in srgb, var(--c-primary) 26%, transparent), transparent 70%);
+            filter: blur(20px);
+        }
+        body::after {
+            inset: 0;
+            background-image:
+                linear-gradient(color-mix(in srgb, var(--c-accent) 14%, transparent) 1px, transparent 1px),
+                linear-gradient(90deg, color-mix(in srgb, var(--c-accent) 14%, transparent) 1px, transparent 1px);
+            background-size: 48px 48px;
+            -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 20%, transparent 70%);
+            mask-image: radial-gradient(ellipse at 50% 50%, #000 20%, transparent 70%);
+        }
         main { max-width: 36rem; }
         .code {
             margin: 0;
             font-size: 0.8125rem;
             font-weight: 600;
-            letter-spacing: 0.12em;
+            font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
             color: var(--c-text-muted);
         }
         h1 {
             margin: 0.5rem 0 1rem;
-            font-family: var(--font-serif);
-            font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
-            line-height: 1.2;
-            border-left: 4px solid var(--c-accent);
-            padding-left: 0.75rem;
+            font-size: clamp(2rem, 1.4rem + 2.5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            background: linear-gradient(100deg, var(--c-primary), color-mix(in srgb, var(--c-primary) 40%, var(--c-accent)), var(--c-primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: var(--c-primary);
         }
         code { overflow-wrap: anywhere; }
         .btn {
@@ -73,11 +95,13 @@
             padding: 0.6rem 1.1rem;
             font-weight: 600;
             color: var(--c-on-primary);
-            background: var(--c-primary);
-            border-radius: 10px;
+            background: linear-gradient(135deg, var(--c-primary), color-mix(in srgb, var(--c-primary) 62%, var(--c-accent)));
+            border-radius: 999px;
             text-decoration: none;
+            box-shadow: 0 1.25rem 3rem -1.25rem color-mix(in srgb, var(--c-accent) 75%, transparent);
+            transition: box-shadow 220ms ease;
         }
-        .btn:hover { background: var(--c-primary-strong); }
+        .btn:hover { box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-accent) 45%, transparent), 0 1.5rem 3.5rem -1rem color-mix(in srgb, var(--c-accent) 85%, transparent); }
         .btn:focus-visible { outline: 3px solid var(--c-primary); outline-offset: 3px; }
         svg { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     </style>

@@ -10,6 +10,7 @@ Currículum personal en una sola página. Es un sitio 100 % estático: HTML5 sem
 ├── 404.html            Página de error con enlace al inicio (estilos en línea)
 ├── .nojekyll           Hace que GitHub Pages sirva los archivos tal cual, sin Jekyll
 ├── css/styles.css      Variables de diseño, layout, tema oscuro e impresión
+├── css/naturaleza.css  Capa experimental «Bosque digital» (solo pantalla; quita su <link> para desactivarla)
 ├── js/main.js          Mejoras opcionales (tema, alto de la cabecera, copiar email, etc.)
 ├── assets/
 │   └── foto-perfil.jpg Fotografía de perfil
