@@ -10,17 +10,16 @@ Currículum personal en una sola página. Es un sitio 100 % estático: HTML5 sem
 ├── 404.html            Página de error con enlace al inicio (estilos en línea)
 ├── .nojekyll           Hace que GitHub Pages sirva los archivos tal cual, sin Jekyll
 ├── css/styles.css      Variables de diseño, layout, tema oscuro e impresión
-├── js/main.js          Mejoras opcionales (tema, menú móvil, copiar email, etc.)
+├── js/main.js          Mejoras opcionales (tema, alto de la cabecera, copiar email, etc.)
 ├── assets/
 │   └── foto-perfil.jpg Fotografía de perfil
-├── Foto casual.jpg     Foto original (no la usa el sitio; se puede borrar)
 ├── HEURISTICAS.md      Cómo se aplica cada heurística de Nielsen
 └── README.md
 ```
 
 Todas las rutas son **relativas** (`css/styles.css`, `assets/...`, `#seccion`), así que el sitio funciona igual en la raíz de un dominio, en un subdirectorio (`/<nombre-repo>/`) o abriendo `index.html` directamente desde el disco.
 
-Si JavaScript está desactivado o falla, todo el contenido sigue visible. La clase `no-js` del elemento `<html>` oculta los controles que dependen de JS (copiar, tema, imprimir y el botón del menú) y deja la navegación siempre a la vista.
+Si JavaScript está desactivado o falla, todo el contenido sigue visible. La clase `no-js` del elemento `<html>` oculta los controles que dependen de JS (copiar, tema e imprimir); la navegación siempre está a la vista.
 
 ## Cómo editar el contenido
 

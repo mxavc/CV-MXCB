@@ -10,15 +10,15 @@
 /* ---------- 1. Tokens ---------- */
 :root {
     /* Paleta: 2 colores + neutros */
-    --c-primary: #2f5d63;          /* verde azulado: enlaces, activo, foco */
-    --c-primary-strong: #1f4247;   /* hover/active del primario */
-    --c-accent: #b6a97f;           /* arena: solo detalles decorativos */
-    --c-text: #1f2a2c;
-    --c-text-muted: #4a5a5d;
-    --c-bg: #f6f6f3;
+    --c-primary: #4b1f78;          /* púrpura oscuro: enlaces, navegación, activo, foco */
+    --c-primary-strong: #34134f;   /* hover/active del primario */
+    --c-accent: #9a7cc4;           /* lavanda: solo detalles decorativos */
+    --c-text: #221c2b;
+    --c-text-muted: #544b61;
+    --c-bg: #f7f5fa;
     --c-surface: #ffffff;
-    --c-border: #d9dedb;
-    --c-tag-bg: #eaf0ee;
+    --c-border: #ddd6e6;
+    --c-tag-bg: #eee8f6;
     --c-todo-bg: #fff3c4;
     --c-todo-text: #4d3b00;
     --c-on-primary: #ffffff;
@@ -29,12 +29,15 @@
     /* Tipografía: 2 familias del sistema (sin descargas) */
     --font-serif: Georgia, "Times New Roman", serif;
     --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --fs-xs: 0.8125rem;
-    --fs-sm: 0.9375rem;
-    --fs-base: 1rem;
-    --fs-md: 1.25rem;
-    --fs-lg: 1.625rem;
-    --fs-xl: clamp(2rem, 1.2rem + 2.2vw, 3.5rem);
+    /* La raíz crece hasta 2.5× (ver html): el texto usa la mitad de esa escala,
+       con un mínimo en px para que siga legible en móvil. El espaciado no cambia. */
+    --fs-xs: max(0.4375rem, 14px);
+    --fs-sm: max(0.5rem, 16px);
+    --fs-base: max(0.5625rem, 18px);
+    --fs-md: max(0.6875rem, 22px);
+    --fs-lg: max(1.1875rem, 30px);
+    --fs-xl: max(2rem, 40px);
+    --fs-nav: max(0.59375rem, 19px);
     --lh-tight: 1.2;
     --lh-base: 1.65;
 
@@ -47,13 +50,15 @@
     --sp-6: 2rem;
     --sp-7: 3rem;
     --sp-8: 4.5rem;
+    --sp-9: 6rem;
 
     --radius: 10px;
     --radius-pill: 999px;
-    --page-gutter: clamp(1rem, 4vw, 5rem);  /* margen lateral fluido: el contenido usa todo el ancho */
-    --col-min: clamp(22rem, 28vw, 34rem);   /* ancho mínimo de columna; crece con la pantalla para no dejar huecos */
-    --prose-max: 75ch;
-    --header-h: 3.75rem;
+    --page-gutter: clamp(1rem, 4vw, 3rem);  /* margen lateral fluido */
+    --page-max: 76rem;                      /* ancho máximo del contenido (en rem: crece con la letra) */
+    --col-min: 18rem;                       /* ancho mínimo de columna de las entradas */
+    --prose-max: 68ch;
+    --header-h: 7rem;               /* alto de la cabecera fija; main.js lo mide y actualiza */
     --focus-ring: 3px solid var(--c-primary);
     --transition: 160ms ease;
 }
@@ -61,35 +66,35 @@
 /* ---------- 2. Tema oscuro (sistema + manual) ---------- */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-        --c-primary: #8cc8ce;
-        --c-primary-strong: #b5dfe3;
-        --c-accent: #cbbf93;
-        --c-text: #e6ecec;
-        --c-text-muted: #b3c0c2;
-        --c-bg: #13191b;
-        --c-surface: #1b2326;
-        --c-border: #2f3b3e;
-        --c-tag-bg: #24302f;
+        --c-primary: #c9a8f0;
+        --c-primary-strong: #e0cdf8;
+        --c-accent: #8f6cc0;
+        --c-text: #ece8f2;
+        --c-text-muted: #bdb3cb;
+        --c-bg: #141019;
+        --c-surface: #1d1725;
+        --c-border: #352c42;
+        --c-tag-bg: #2a2136;
         --c-todo-bg: #4d3b00;
         --c-todo-text: #fff3c4;
-        --c-on-primary: #13191b;
+        --c-on-primary: #141019;
         color-scheme: dark;
     }
 }
 
 :root[data-theme="dark"] {
-    --c-primary: #8cc8ce;
-    --c-primary-strong: #b5dfe3;
-    --c-accent: #cbbf93;
-    --c-text: #e6ecec;
-    --c-text-muted: #b3c0c2;
-    --c-bg: #13191b;
-    --c-surface: #1b2326;
-    --c-border: #2f3b3e;
-    --c-tag-bg: #24302f;
+    --c-primary: #c9a8f0;
+    --c-primary-strong: #e0cdf8;
+    --c-accent: #8f6cc0;
+    --c-text: #ece8f2;
+    --c-text-muted: #bdb3cb;
+    --c-bg: #141019;
+    --c-surface: #1d1725;
+    --c-border: #352c42;
+    --c-tag-bg: #2a2136;
     --c-todo-bg: #4d3b00;
     --c-todo-text: #fff3c4;
-    --c-on-primary: #13191b;
+    --c-on-primary: #141019;
     color-scheme: dark;
 }
 
@@ -104,7 +109,10 @@
     box-sizing: border-box;
 }
 
+/* Toda la escala (texto, espaciado, botones) está en rem: al crecer la raíz,
+   crece la página entera. 16px en móvil → 2.5× (40px) hacia 1920px de ancho. */
 html {
+    font-size: clamp(100%, 0.32rem + 1.82vw, 250%);
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h) + var(--sp-4));
     -webkit-text-size-adjust: 100%;
@@ -202,11 +210,13 @@ main:focus {
 }
 
 .header-inner {
-    min-height: var(--header-h);
-    padding: 0 var(--page-gutter);
+    max-width: calc(var(--page-max) + 2 * var(--page-gutter));
+    margin: 0 auto;
+    padding: var(--sp-3) var(--page-gutter);
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--sp-4);
+    gap: var(--sp-3) var(--sp-4);
 }
 
 .brand {
@@ -222,16 +232,22 @@ main:focus {
     color: var(--c-primary);
 }
 
+/* Cabecera en dos filas: nombre y acciones arriba; secciones del CV abajo, centradas.
+   El contenedor no genera caja para que sus hijos se ordenen en la fila de la cabecera. */
 .menu-panel {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-4);
-    margin-left: auto;
+    display: contents;
+}
+
+.site-nav {
+    order: 3;
+    flex-basis: 100%;
 }
 
 .nav-list {
     display: flex;
-    gap: var(--sp-1);
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-2);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -239,18 +255,19 @@ main:focus {
 
 .nav-link {
     display: block;
-    padding: var(--sp-2) var(--sp-3);
+    padding: var(--sp-2) var(--sp-4);
     border-radius: var(--radius);
-    color: var(--c-text-muted);
-    font-size: var(--fs-sm);
-    font-weight: 500;
+    color: var(--c-primary);
+    font-size: var(--fs-nav);
+    font-weight: 600;
+    letter-spacing: 0.01em;
     text-decoration: none;
-    border-bottom: 2px solid transparent;
+    border-bottom: 3px solid transparent;
     transition: color var(--transition), background-color var(--transition);
 }
 
 .nav-link:hover {
-    color: var(--c-primary);
+    color: var(--c-primary-strong);
     background: var(--c-tag-bg);
 }
 
@@ -260,23 +277,25 @@ main:focus {
 
 /* H1 · sección activa (lo marca main.js con aria-current) */
 .nav-link[aria-current="true"] {
-    color: var(--c-primary);
-    font-weight: 700;
+    color: var(--c-primary-strong);
+    font-weight: 800;
+    background: var(--c-tag-bg);
     border-bottom-color: var(--c-primary);
     border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .header-actions {
+    order: 2;
     display: flex;
+    flex-wrap: wrap;
     gap: var(--sp-2);
-}
-
-.menu-toggle {
-    display: none;
+    margin-left: auto;
 }
 
 main {
-    padding: var(--sp-6) var(--page-gutter) var(--sp-7);
+    max-width: calc(var(--page-max) + 2 * var(--page-gutter));
+    margin: 0 auto;
+    padding: var(--sp-6) var(--page-gutter) var(--sp-8);
 }
 
 /* Cada sección es una cuadrícula fluida: las entradas se reparten en tantas
@@ -284,9 +303,10 @@ main {
 .section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr));
-    gap: var(--sp-6) var(--sp-7);
+    justify-content: center;
+    gap: var(--sp-7);
     align-items: start;
-    padding: var(--sp-7) 0 var(--sp-5);
+    padding: var(--sp-9) 0 var(--sp-8);
     border-top: 1px solid var(--c-border);
 }
 
@@ -300,21 +320,32 @@ main {
 
 .section.profile {
     display: block;
-    padding-top: var(--sp-5);
+    padding-top: var(--sp-6);
     border-top: 0;
+    text-align: center;
+}
+
+.profile-about {
+    max-width: var(--prose-max);
+    margin: 0 auto;
 }
 
 .profile-about > .section-title {
-    margin-bottom: var(--sp-5);
+    margin-bottom: var(--sp-6);
+}
+
+.profile-about .tag-list {
+    justify-content: center;
 }
 
 .site-footer {
-    padding: var(--sp-5) var(--page-gutter) 8rem;   /* espacio para los botones flotantes */
+    padding: var(--sp-6) var(--page-gutter) 8rem;   /* espacio para los botones flotantes */
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: var(--sp-4);
+    gap: var(--sp-2);
+    text-align: center;
     border-top: 1px solid var(--c-border);
     color: var(--c-text-muted);
     font-size: var(--fs-sm);
@@ -330,13 +361,14 @@ main {
 .profile-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--sp-5);
+    justify-items: center;
+    gap: var(--sp-6);
     align-items: center;
-    margin-bottom: var(--sp-6);
+    margin-bottom: var(--sp-9);
 }
 
 .profile-photo {
-    width: clamp(140px, 15vw, 260px);   /* solo se escala; proporción original 4:5 sin recorte */
+    width: clamp(320px, 36vw, 520px);   /* solo se escala; proporción original 4:5 sin recorte */
     border-radius: var(--radius);
     border: 3px solid var(--c-accent);
 }
@@ -357,7 +389,7 @@ main {
 }
 
 .role {
-    margin: var(--sp-2) 0 var(--sp-4);
+    margin: var(--sp-3) 0 var(--sp-5);
     font-size: var(--fs-md);
     color: var(--c-text-muted);
 }
@@ -365,6 +397,7 @@ main {
 .quick-contact {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: var(--sp-2) var(--sp-5);
     margin: 0;
     padding: 0;
@@ -383,17 +416,20 @@ main {
 /* Títulos de sección con ancla compartible */
 .section-title {
     display: flex;
+    justify-content: center;
     align-items: baseline;
-    gap: var(--sp-3);
-    margin-bottom: var(--sp-5);
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-6);
     font-family: var(--font-serif);
     font-size: var(--fs-lg);
+    text-align: center;
 }
 
-.section-title::before {
+.section-title::before,
+.section-title::after {
     content: "";
     align-self: center;
-    width: 1.5rem;
+    width: clamp(1.5rem, 6vw, 4rem);
     height: 3px;
     background: var(--c-accent);
     border-radius: 2px;
@@ -415,7 +451,7 @@ main {
 }
 
 .subheading {
-    margin: var(--sp-5) 0 var(--sp-3);
+    margin: var(--sp-7) 0 var(--sp-4);
     font-size: var(--fs-sm);
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -425,12 +461,13 @@ main {
 
 .prose {
     max-width: var(--prose-max);
+    margin-inline: auto;
 }
 
 /* Entrada única (experiencia, educación, proyectos) */
 .entry {
     position: relative;
-    padding: 0 0 var(--sp-2) var(--sp-5);
+    padding: 0 0 var(--sp-4) var(--sp-5);
     border-left: 2px solid var(--c-border);
 }
 
@@ -447,7 +484,7 @@ main {
 }
 
 .entry-header {
-    margin-bottom: var(--sp-3);
+    margin-bottom: var(--sp-4);
 }
 
 .entry-title {
@@ -472,7 +509,7 @@ main {
 }
 
 .entry-list li + li {
-    margin-top: var(--sp-1);
+    margin-top: var(--sp-2);
 }
 
 /* Etiquetas */
@@ -496,21 +533,24 @@ main {
 /* Habilidades */
 .skills {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
-    gap: var(--sp-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: var(--sp-5);
     margin: 0;
 }
 
 .skill-group {
-    padding: var(--sp-4);
+    padding: var(--sp-5);
+    text-align: center;
     background: var(--c-surface);
     border: 1px solid var(--c-border);
     border-radius: var(--radius);
 }
 
 .skill-group dt {
+    font-size: var(--fs-md);
     font-weight: 700;
-    margin-bottom: var(--sp-1);
+    color: var(--c-primary);
+    margin-bottom: var(--sp-2);
 }
 
 .skill-group dd {
@@ -522,7 +562,7 @@ main {
 .contact-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
-    gap: var(--sp-4) var(--sp-7);
+    gap: var(--sp-5) var(--sp-7);
     margin: var(--sp-5) 0 0;
     padding: 0;
     list-style: none;
@@ -531,8 +571,8 @@ main {
 .contact-item {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--sp-1);
-    padding-bottom: var(--sp-4);
+    gap: var(--sp-2);
+    padding-bottom: var(--sp-5);
     border-bottom: 1px solid var(--c-border);
 }
 
@@ -697,94 +737,28 @@ main {
 
 /* ---------- Responsive ---------- */
 
-/* Móvil y tablet: menú colapsable (solo con JS) */
-@media (max-width: 71.99rem) {
-    .js .menu-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-2);
-        margin-left: auto;
-        min-height: 2.5rem;
-        padding: var(--sp-2) var(--sp-3);
-        font: inherit;
-        font-weight: 600;
-        color: var(--c-text);
-        background: transparent;
-        border: 1px solid var(--c-border);
-        border-radius: var(--radius);
-        cursor: pointer;
+/* Móvil: la cabecera ocupa varias filas, así que no se fija arriba
+   (el botón «Volver arriba» sigue disponible) y todo se centra. */
+@media (max-width: 39.99rem) {
+    html {
+        scroll-padding-top: var(--sp-4);
     }
 
-    .js .menu-toggle:hover {
-        border-color: var(--c-primary);
-        color: var(--c-primary);
+    .site-header {
+        position: static;
     }
 
-    .js .menu-toggle[aria-expanded="true"] {
-        background: var(--c-tag-bg);
-        border-color: var(--c-primary);
+    .header-inner {
+        justify-content: center;
     }
 
-    .js .menu-panel {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        align-items: stretch;
-        gap: var(--sp-4);
-        padding: var(--sp-4);
-        background: var(--c-surface);
-        border-bottom: 1px solid var(--c-border);
-        box-shadow: 0 8px 16px rgb(0 0 0 / 0.12);
-    }
-
-    .js .menu-panel.is-open {
-        display: flex;
-    }
-
-    .js .nav-list {
-        flex-direction: column;
-    }
-
-    .js .nav-link {
-        padding: var(--sp-3);
-        font-size: var(--fs-base);
-    }
-
-    .js .nav-link[aria-current="true"] {
-        border-bottom-color: transparent;
-        border-left: 3px solid var(--c-primary);
-        border-radius: 0 var(--radius) var(--radius) 0;
-        background: var(--c-tag-bg);
-    }
-
-    .js .header-actions {
-        flex-wrap: wrap;
-        padding-top: var(--sp-4);
-        border-top: 1px solid var(--c-border);
-    }
-
-    /* Sin JS: la navegación se mantiene visible como fila desplazable */
-    .no-js .header-inner {
-        flex-wrap: wrap;
-        padding-top: var(--sp-2);
-    }
-
-    .no-js .menu-panel {
+    .header-actions {
+        justify-content: center;
         margin-left: 0;
-        width: 100%;
-        overflow-x: auto;
     }
 }
 
 @media (min-width: 40rem) {
-    .profile-grid {
-        grid-template-columns: auto 1fr;
-        gap: var(--sp-6);
-    }
-
     .contact-item {
         grid-template-columns: 11rem 1fr;
         align-items: center;
@@ -794,24 +768,6 @@ main {
 @media (min-width: 60rem) {
     main {
         padding-top: var(--sp-7);
-    }
-}
-
-/* Pantallas anchas: identidad a la izquierda y texto de perfil a la derecha */
-@media (min-width: 72rem) {
-    .section.profile {
-        display: grid;
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-        column-gap: var(--sp-8);
-        align-items: center;
-    }
-
-    .section.profile > * {
-        grid-column: auto;
-    }
-
-    .section.profile > .profile-grid {
-        margin-bottom: 0;
     }
 }
 
@@ -873,6 +829,12 @@ main {
         --c-tag-bg: #fff;
         --c-todo-bg: #fff;
         --c-todo-text: #000;
+        --fs-xs: 0.8125rem;
+        --fs-sm: 0.9375rem;
+        --fs-base: 1rem;
+        --fs-md: 1.2rem;
+        --fs-lg: 1.5rem;
+        --fs-xl: 2.25rem;
         color-scheme: light;
     }
 
@@ -905,7 +867,25 @@ main {
     }
 
     main {
+        max-width: none;
         padding: 0;
+    }
+
+    .section.profile,
+    .skill-group,
+    .site-footer {
+        text-align: left;
+    }
+
+    .quick-contact,
+    .profile-about .tag-list {
+        justify-content: flex-start;
+    }
+
+    .profile-about,
+    .prose {
+        max-width: none;
+        margin: 0;
     }
 
     .section,
@@ -921,6 +901,7 @@ main {
 
     .profile-grid {
         grid-template-columns: auto 1fr;
+        justify-items: start;
         gap: 1rem;
         margin-bottom: 0.8rem;
     }
@@ -936,7 +917,12 @@ main {
         margin-bottom: 0.6rem;
     }
 
-    .section-title::before {
+    .section-title {
+        justify-content: flex-start;
+    }
+
+    .section-title::before,
+    .section-title::after {
         display: none;
     }
 
@@ -1007,5 +993,6 @@ main {
 
     .site-footer {
         padding: 0.6rem 0 0;
+        align-items: flex-start;
     }
 }

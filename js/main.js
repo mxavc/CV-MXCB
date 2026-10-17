@@ -54,45 +54,14 @@
     }
     renderTheme();
 
-    /* ---------- H3 Control y libertad: menú móvil (Esc / clic fuera) ---------- */
-    var menuBtn = document.querySelector('.menu-toggle');
-    var menuPanel = document.getElementById('menu-principal');
+    /* ---------- H6 Reconocer: la cabecera fija nunca tapa el destino de un enlace ---------- */
+    // Su alto cambia con el ancho (las secciones pueden ocupar dos filas): se mide en vivo.
+    var header = document.querySelector('.site-header');
 
-    function setMenu(open, returnFocus) {
-        if (!menuBtn || !menuPanel) return;
-        menuBtn.setAttribute('aria-expanded', String(open));
-        menuPanel.classList.toggle('is-open', open);
-        menuBtn.querySelector('.menu-toggle-label').textContent = open ? 'Cerrar' : 'Menú';
-        if (!open && returnFocus) menuBtn.focus();
-    }
-
-    function menuIsOpen() {
-        return menuBtn && menuBtn.getAttribute('aria-expanded') === 'true';
-    }
-
-    if (menuBtn && menuPanel) {
-        menuBtn.addEventListener('click', function () {
-            setMenu(!menuIsOpen(), false);
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && menuIsOpen()) setMenu(false, true);
-        });
-
-        document.addEventListener('click', function (e) {
-            if (menuIsOpen() && !menuPanel.contains(e.target) && !menuBtn.contains(e.target)) {
-                setMenu(false, false);
-            }
-        });
-
-        menuPanel.addEventListener('click', function (e) {
-            if (e.target.closest('.nav-link')) setMenu(false, false);
-        });
-
-        // Al pasar a escritorio el panel siempre es visible: resetea el estado.
-        window.matchMedia('(min-width: 72rem)').addEventListener('change', function (mq) {
-            if (mq.matches) setMenu(false, false);
-        });
+    if (header && 'ResizeObserver' in window) {
+        new ResizeObserver(function () {
+            root.style.setProperty('--header-h', header.offsetHeight + 'px');
+        }).observe(header);
     }
 
     /* ---------- H1 Visibilidad del estado: sección activa en la navegación ---------- */
